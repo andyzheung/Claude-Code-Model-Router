@@ -1,10 +1,12 @@
-[![npm version](https://img.shields.io/npm/v/claude-code-model-router.svg)](https://www.npmjs.com/package/claude-code-model-router)
-[![npm downloads](https://img.shields.io/npm/dm/claude-code-model-router.svg)](https://www.npmjs.com/package/claude-code-model-router)
+[![npm version](https://img.shields.io/npm/v/@andyzheung/ccmr.svg)](https://www.npmjs.com/package/@andyzheung/ccmr)
+[![npm downloads](https://img.shields.io/npm/dm/@andyzheung/ccmr.svg)](https://www.npmjs.com/package/@andyzheung/ccmr)
 
 
-# Claude Code Model Router
+# CCMR-Plus (Claude Code Model Router Plus)
 
 一个轻量级 API 网关，让你在使用 Claude Code 时可以切换到第三方 AI 模型。
+
+> 这是 [claude-code-model-router](https://github.com/luwill/Claude-Code-Model-Router) 的增强版本，支持最新的 GLM-5 和 MiniMax M2.5 模型。
 
 支持 Windows、macOS、Linux 跨平台使用。
 
@@ -14,16 +16,16 @@
 
 ```bash
 # 1. 初始化配置文件
-npx claude-code-model-router init
+npx @andyzheung/ccmr init
 
 # 2. 编辑 .env 文件，填入 API Keys
 
 # 3. 启动网关
-npx claude-code-model-router start
+npx @andyzheung/ccmr start
 
 # 4. 新开终端，启动 Claude Code
 # 第三方模型（网关模式）：
-npx claude-code-model-router claude
+npx @andyzheung/ccmr claude
 
 # 官方订阅（默认模式）：
 claude
@@ -32,33 +34,33 @@ claude
 ### 方式二：全局安装
 
 ```bash
-npm install -g claude-code-model-router
+npm install -g @andyzheung/ccmr
 
-# 然后使用 ccmr 命令
-ccmr init
-ccmr start
+# 然后使用 ccmr-plus 命令
+ccmr-plus init
+ccmr-plus start
 
 # 启动 Claude Code
-ccmr claude    # 第三方模型（网关模式）
-claude         # 官方订阅（默认模式）
+ccmr-plus claude    # 第三方模型（网关模式）
+claude              # 官方订阅（默认模式）
 ```
 
 ## 命令说明
 
 ```bash
 # 初始化配置文件
-npx claude-code-model-router init
+npx @andyzheung/ccmr init
 
 # 启动网关
-npx claude-code-model-router start
-npx claude-code-model-router start --port 9000  # 指定端口
+npx @andyzheung/ccmr start
+npx @andyzheung/ccmr start --port 9000  # 指定端口
 
 # 查看可用模型
-npx claude-code-model-router models
+npx @andyzheung/ccmr models
 
 # 启动 Claude Code（网关模式，使用第三方模型）
-npx claude-code-model-router claude
-npx claude-code-model-router claude --gateway-port 9000  # 自定义网关端口
+npx @andyzheung/ccmr claude
+npx @andyzheung/ccmr claude --gateway-port 9000  # 自定义网关端口
 
 # 启动 Claude Code（官方订阅）
 claude
@@ -66,39 +68,39 @@ claude
 
 ### Claude Code 原生参数支持
 
-`ccmr claude` 命令完整支持 Claude Code 的原生启动参数：
+`ccmr-plus claude` 命令完整支持 Claude Code 的原生启动参数：
 
 ```bash
 # YOLO 模式（跳过所有权限确认）
-ccmr claude --dangerously-skip-permissions
+ccmr-plus claude --dangerously-skip-permissions
 
 # 继续上一次会话
-ccmr claude --continue
-ccmr claude -c
+ccmr-plus claude --continue
+ccmr-plus claude -c
 
 # YOLO 模式 + 继续上一次会话
-ccmr claude --dangerously-skip-permissions --continue
+ccmr-plus claude --dangerously-skip-permissions --continue
 
 # 恢复指定会话（交互式选择）
-ccmr claude --resume
-ccmr claude -r
+ccmr-plus claude --resume
+ccmr-plus claude -r
 
 # 恢复指定会话 ID
-ccmr claude --resume <session-id>
+ccmr-plus claude --resume <session-id>
 
 # 调试模式
-ccmr claude --debug
-ccmr claude --verbose
+ccmr-plus claude --debug
+ccmr-plus claude --verbose
 
 # 连接 IDE
-ccmr claude --ide
+ccmr-plus claude --ide
 
 # 指定权限模式
-ccmr claude --permission-mode bypassPermissions
+ccmr-plus claude --permission-mode bypassPermissions
 
 # 打印模式（非交互式）
-ccmr claude -p "你的问题"
-ccmr claude --print --output-format json "你的问题"
+ccmr-plus claude -p "你的问题"
+ccmr-plus claude --print --output-format json "你的问题"
 ```
 
 **支持的完整参数列表：**
@@ -120,7 +122,7 @@ ccmr claude --print --output-format json "你的问题"
 | `--ide` | 自动连接 IDE |
 | `--gateway-port <port>` | 指定网关端口（默认 8080） |
 
-> **提示：** 任何 Claude Code 原生支持的参数都可以直接传递给 `ccmr claude`
+> **提示：** 任何 Claude Code 原生支持的参数都可以直接传递给 `ccmr-plus claude`
 
 ## 支持的模型
 
@@ -128,9 +130,9 @@ ccmr claude --print --output-format json "你的问题"
 |--------|----------|------|--------|
 | `deepseek` | `deepseek-v3.2`, `ds` | DeepSeek V3.2 | DeepSeek |
 | `kimi` | `kimi-k2`, `kimi-k2-thinking` | Kimi K2 Thinking | Moonshot |
-| `minimax` | `minimax-m2.1`, `mm` | MiniMax M2.1 | MiniMax |
+| `minimax` | `minimax-m2.5`, `minimax-m2.1`, `mm` | MiniMax M2.5 | MiniMax |
 | `qwen` | `qwen3-max`, `qwen3` | Qwen3 Max | 阿里云 |
-| `glm` | `glm-4.7`, `zhipu` | GLM 4.7 | 智谱 AI |
+| `glm` | `glm-5`, `glm-4.7`, `zhipu` | GLM 5.0 | 智谱 AI |
 
 ### 模型参数
 
@@ -138,9 +140,9 @@ ccmr claude --print --output-format json "你的问题"
 |------|----------------|-------------------|
 | DeepSeek V3.2 | 128K | 128K |
 | Kimi K2 Thinking | 256K | 32K |
-| MiniMax M2.1 | 200K | 128K |
+| MiniMax M2.5 | 200K | 128K |
 | Qwen3 Max | 256K | 32K |
-| GLM 4.7 | 200K | 128K |
+| GLM 5.0 | 200K | 128K |
 
 ## 配置
 
@@ -156,7 +158,7 @@ GLM_API_KEY=xxx            # https://open.bigmodel.cn/
 
 ### 配置文件 (models.yaml)
 
-可以自定义模型配置、添加别名等。运行 `init` 命令会生成模板。
+可以自定义模型配置、添加别名等。运行 `ccmr-plus init` 命令会生成模板。
 
 ## 使用场景
 
@@ -174,16 +176,16 @@ GLM_API_KEY=xxx            # https://open.bigmodel.cn/
 
 ┌─────────────────────────────────────────────────────────────────┐
 │  模式2: 第三方模型（网关）                                        │
-│  命令: npx claude-code-model-router claude                      │
-│  配置: ~/.claude-gateway/settings.json                          │
-│  用途: 使用第三方 AI 模型（DeepSeek, GLM, Qwen 等）              │
+│  命令: npx @andyzheung/ccmr claude                              │
+│  配置: ~/.ccmr-plus/settings.json                              │
+│  用途: 使用第三方 AI 模型（GLM-5, MiniMax M2.5 等）              │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 #### 为什么配置是隔离的？
 
 - **官方模式**使用 `~/.claude/` 配置目录（Claude Code 默认）
-- **网关模式**使用 `~/.claude-gateway/` 配置目录（独立隔离）
+- **网关模式**使用 `~/.ccmr-plus/` 配置目录（独立隔离）
 - 两个配置目录完全独立，互不干扰
 - 在网关模式切换模型不会影响官方模式
 
@@ -191,7 +193,7 @@ GLM_API_KEY=xxx            # https://open.bigmodel.cn/
 
 **第一步：启动网关**
 ```bash
-npx claude-code-model-router start
+npx @andyzheung/ccmr start
 ```
 
 **第二步：选择使用模式**
@@ -206,11 +208,11 @@ claude
 
 **使用第三方模型（终端 B）：**
 ```bash
-npx claude-code-model-router claude
+npx @andyzheung/ccmr claude
 ```
-- 使用第三方 AI 模型（DeepSeek, GLM, Qwen 等）
+- 使用第三方 AI 模型（GLM-5, MiniMax M2.5 等）
 - 按 API 使用量付费
-- 配置存储在 `~/.claude-gateway/`
+- 配置存储在 `~/.ccmr-plus/`
 
 #### 跨平台支持
 
@@ -240,8 +242,8 @@ npx claude-code-model-router claude
 
 # 使用版本别名（明确指定版本）
 /model deepseek-v3.2   # DeepSeek V3.2
-/model glm-4.7         # GLM 4.7
-/model minimax-m2.1    # MiniMax M2.1
+/model glm-5           # GLM 5.0
+/model minimax-m2.5    # MiniMax M2.5
 /model kimi-k2         # Kimi K2 Thinking
 /model qwen3-max       # Qwen3 Max
 ```
@@ -260,7 +262,7 @@ npx claude-code-model-router claude
 
 ```bash
 # 克隆项目
-git clone https://github.com/luwill/Claude-Code-Model-Router.git
+git clone https://github.com/andyzheung/Claude-Code-Model-Router.git
 cd Claude-Code-Model-Router
 
 # 安装依赖
@@ -274,7 +276,7 @@ npm run build
 
 # 本地测试
 npm link
-ccmr start
+ccmr-plus start
 ```
 
 ## 故障排除
@@ -283,16 +285,22 @@ ccmr start
 
 ```bash
 # 使用其他端口
-npx claude-code-model-router start --port 9000
+npx @andyzheung/ccmr start --port 9000
 ```
 
 ### API Key 错误
 
 1. 检查 .env 文件中的 Key 是否正确
 2. 确认账户有余额
-3. 运行 `npx claude-code-model-router models` 查看状态
+3. 运行 `npx @andyzheung/ccmr models` 查看状态
 
 ## 更新日志
+
+### v1.2.0
+- 更新 MiniMax 模型至 M2.5 版本
+- 更新 GLM 模型至 5.0 版本（model_id: glm-5）
+- 新增版本别名 `glm-5` 和 `minimax-m2.5`
+- 保留旧版本别名向后兼容
 
 ### v1.1.0
 - 更新 MiniMax 模型至 M2.1 版本

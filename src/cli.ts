@@ -165,7 +165,7 @@ program
     // Set up environment for gateway
     const env = {
       ...process.env,
-      CLAUDE_CONFIG_DIR: path.join(homeDir, '.claude-gateway'),
+      CLAUDE_CONFIG_DIR: path.join(homeDir, '.ccmr-plus'),
       ANTHROPIC_BASE_URL: `http://localhost:${gatewayPort}`,
     };
 
