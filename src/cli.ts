@@ -10,11 +10,11 @@ import path from 'node:path';
 import { ConfigManager, generateConfigFile, generateEnvFile } from './config.js';
 import { startServer } from './server.js';
 
-const VERSION = '1.2.2';
+const VERSION = '1.2.3';
 
 program
-  .name('ccmr')
-  .description('Claude Code Model Router - A lightweight API gateway for multi-model switching')
+  .name('ccmr-plus')
+  .description('Claude Code Model Router Plus - A lightweight API gateway for multi-model switching')
   .version(VERSION);
 
 // Start command
@@ -80,11 +80,11 @@ program
     console.log('');
     console.log('Next steps:');
     console.log('  1. Edit .env and add your API keys');
-    console.log('  2. Run: npx claude-code-model-router start');
+    console.log('  2. Run: ccmr-plus start');
     console.log('  3. In a new terminal, start Claude Code:');
     console.log('');
     console.log('     # For third-party models (gateway mode):');
-    console.log('     npx claude-code-model-router claude');
+    console.log('     ccmr-plus claude');
     console.log('');
     console.log('     # For official subscription (default mode):');
     console.log('     claude');
@@ -259,12 +259,12 @@ program.parse();
 // Show help if no command provided
 if (!process.argv.slice(2).length) {
   console.log('');
-  console.log('Claude Code Model Router v' + VERSION);
+  console.log('Claude Code Model Router Plus v' + VERSION);
   console.log('');
   console.log('Quick Start:');
-  console.log('  1. npx claude-code-model-router init     # Create config files');
+  console.log('  1. ccmr-plus init     # Create config files');
   console.log('  2. Edit .env with your API keys');
-  console.log('  3. npx claude-code-model-router start    # Start gateway');
+  console.log('  3. ccmr-plus start    # Start gateway');
   console.log('');
   console.log('Commands:');
   console.log('  init      Create configuration files');
