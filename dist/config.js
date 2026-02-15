@@ -43,9 +43,9 @@ const DEFAULT_CONFIG = {
             context_window: 256000,
         },
         minimax: {
-            display_name: 'MiniMax M2.1',
+            display_name: 'MiniMax M2.5',
             provider: 'minimax',
-            model_id: 'MiniMax-M2.1',
+            model_id: 'MiniMax-M2.5',
             base_url: 'https://api.minimaxi.com/anthropic',
             api_key_env: 'MINIMAX_API_KEY',
             auth_header: 'x-api-key',
@@ -67,9 +67,9 @@ const DEFAULT_CONFIG = {
             context_window: 256000,
         },
         glm: {
-            display_name: 'GLM 4.7',
+            display_name: 'GLM 5.0',
             provider: 'zhipu',
-            model_id: 'GLM-4.7',
+            model_id: 'glm-5',
             base_url: 'https://open.bigmodel.cn/api/anthropic',
             api_key_env: 'GLM_API_KEY',
             auth_header: 'x-api-key',
@@ -88,12 +88,15 @@ const DEFAULT_CONFIG = {
         'moonshot': 'kimi',
         'minimax-m2': 'minimax',
         'minimax-m2.1': 'minimax',
+        'minimax-m2.5': 'minimax',
         'mm': 'minimax',
         'qwen3': 'qwen',
         'qwen3-max': 'qwen',
         'tongyi': 'qwen',
         'glm-4.7': 'glm',
         'glm-4.6': 'glm',
+        'glm-5': 'glm',
+        'glm-5.0': 'glm',
         'zhipu': 'glm',
         'chatglm': 'glm',
     },
@@ -118,7 +121,7 @@ class ConfigManager {
             configPath,
             node_path_1.default.join(process.cwd(), 'models.yaml'),
             node_path_1.default.join(process.cwd(), 'config', 'models.yaml'),
-            node_path_1.default.join(process.cwd(), '.claude-router.yaml'),
+            node_path_1.default.join(process.cwd(), '.ccmr-plus.yaml'),
         ].filter(Boolean);
         for (const p of possiblePaths) {
             if (node_fs_1.default.existsSync(p)) {
@@ -194,8 +197,8 @@ class ConfigManager {
 exports.ConfigManager = ConfigManager;
 // Generate default config file content
 function generateConfigFile() {
-    return `# Claude Code Model Router Configuration
-# Place this file as models.yaml or .claude-router.yaml in your project root
+    return `# CCMR-Plus Configuration
+# Place this file as models.yaml or .ccmr-plus.yaml in your project root
 
 default_model: deepseek
 
@@ -221,9 +224,9 @@ models:
     context_window: 256000
 
   minimax:
-    display_name: "MiniMax M2.1"
+    display_name: "MiniMax M2.5"
     provider: minimax
-    model_id: MiniMax-M2.1
+    model_id: MiniMax-M2.5
     base_url: https://api.minimaxi.com/anthropic
     api_key_env: MINIMAX_API_KEY
     auth_header: x-api-key
@@ -241,9 +244,9 @@ models:
     context_window: 256000
 
   glm:
-    display_name: "GLM 4.7"
+    display_name: "GLM 5.0"
     provider: zhipu
-    model_id: GLM-4.7
+    model_id: glm-5
     base_url: https://open.bigmodel.cn/api/anthropic
     api_key_env: GLM_API_KEY
     auth_header: x-api-key
@@ -255,9 +258,11 @@ aliases:
   deepseek-v3.2: deepseek
   mm: minimax
   minimax-m2.1: minimax
+  minimax-m2.5: minimax
   kimi-k2: kimi
   qwen3-max: qwen
   glm-4.7: glm
+  glm-5: glm
 
 gateway:
   port: 8080

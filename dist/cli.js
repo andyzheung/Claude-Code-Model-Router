@@ -12,7 +12,7 @@ const node_fs_1 = __importDefault(require("node:fs"));
 const node_path_1 = __importDefault(require("node:path"));
 const config_js_1 = require("./config.js");
 const server_js_1 = require("./server.js");
-const VERSION = '1.1.0';
+const VERSION = '1.2.2';
 commander_1.program
     .name('ccmr')
     .description('Claude Code Model Router - A lightweight API gateway for multi-model switching')
@@ -154,7 +154,7 @@ commander_1.program
     // Set up environment for gateway
     const env = {
         ...process.env,
-        CLAUDE_CONFIG_DIR: node_path_1.default.join(homeDir, '.claude-gateway'),
+        CLAUDE_CONFIG_DIR: node_path_1.default.join(homeDir, '.ccmr-plus'),
         ANTHROPIC_BASE_URL: `http://localhost:${gatewayPort}`,
     };
     // Build Claude Code arguments
