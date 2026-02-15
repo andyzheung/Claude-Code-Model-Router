@@ -1,12 +1,11 @@
 {
   "name": "@andyzheung/ccmr",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A lightweight API gateway for routing Claude Code requests to multiple AI models (Forked with GLM-5 and MiniMax M2.5 support)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "ccmr-plus": "dist/cli.js",
-    "claude-code-model-router": "dist/cli.js"
+    "ccmr-plus": "dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
