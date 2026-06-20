@@ -12,7 +12,7 @@ const node_fs_1 = __importDefault(require("node:fs"));
 const node_path_1 = __importDefault(require("node:path"));
 const config_js_1 = require("./config.js");
 const server_js_1 = require("./server.js");
-const VERSION = '1.2.3';
+const VERSION = '1.2.4';
 commander_1.program
     .name('ccmr-plus')
     .description('Claude Code Model Router Plus - A lightweight API gateway for multi-model switching')

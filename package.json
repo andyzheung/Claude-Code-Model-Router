@@ -1,7 +1,7 @@
 {
   "name": "@andyzheung/ccmr",
-  "version": "1.2.3",
-  "description": "A lightweight API gateway for routing Claude Code requests to multiple AI models (Forked with GLM-5 and MiniMax M2.5 support)",
+  "version": "1.2.4",
+  "description": "A lightweight API gateway for routing Claude Code requests to multiple AI models (Forked with GLM-5.2 and MiniMax M2.5 support)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -24,6 +24,7 @@
     "deepseek",
     "glm",
     "glm-5",
+    "glm-5.2",
     "minimax",
     "minimax-m2.5",
     "qwen",

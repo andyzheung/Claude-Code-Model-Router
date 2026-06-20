@@ -6,7 +6,7 @@
 
 一个轻量级 API 网关，让你在使用 Claude Code 时可以切换到第三方 AI 模型。
 
-> 这是 [claude-code-model-router](https://github.com/luwill/Claude-Code-Model-Router) 的增强版本，支持最新的 GLM-5 和 MiniMax M2.5 模型。
+> 这是 [claude-code-model-router](https://github.com/luwill/Claude-Code-Model-Router) 的增强版本，支持最新的 GLM-5.2 和 MiniMax M2.5 模型。
 
 支持 Windows、macOS、Linux 跨平台使用。
 
@@ -132,7 +132,7 @@ ccmr-plus claude --print --output-format json "你的问题"
 | `kimi` | `kimi-k2`, `kimi-k2-thinking` | Kimi K2 Thinking | Moonshot |
 | `minimax` | `minimax-m2.5`, `minimax-m2.1`, `mm` | MiniMax M2.5 | MiniMax |
 | `qwen` | `qwen3-max`, `qwen3` | Qwen3 Max | 阿里云 |
-| `glm` | `glm-5`, `glm-4.7`, `zhipu` | GLM 5.0 | 智谱 AI |
+| `glm` | `glm-5.2`, `glm-5`, `glm-4.7`, `zhipu` | GLM 5.2 | 智谱 AI |
 
 ### 模型参数
 
@@ -142,7 +142,7 @@ ccmr-plus claude --print --output-format json "你的问题"
 | Kimi K2 Thinking | 256K | 32K |
 | MiniMax M2.5 | 200K | 128K |
 | Qwen3 Max | 256K | 32K |
-| GLM 5.0 | 200K | 128K |
+| GLM 5.2 | 1M | 64K |
 
 ## 配置
 
@@ -178,7 +178,7 @@ GLM_API_KEY=xxx            # https://open.bigmodel.cn/
 │  模式2: 第三方模型（网关）                                        │
 │  命令: npx @andyzheung/ccmr claude                              │
 │  配置: ~/.ccmr-plus/settings.json                              │
-│  用途: 使用第三方 AI 模型（GLM-5, MiniMax M2.5 等）              │
+│  用途: 使用第三方 AI 模型（GLM-5.2, MiniMax M2.5 等）              │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -210,7 +210,7 @@ claude
 ```bash
 npx @andyzheung/ccmr claude
 ```
-- 使用第三方 AI 模型（GLM-5, MiniMax M2.5 等）
+- 使用第三方 AI 模型（GLM-5.2, MiniMax M2.5 等）
 - 按 API 使用量付费
 - 配置存储在 `~/.ccmr-plus/`
 
@@ -236,13 +236,13 @@ npx @andyzheung/ccmr claude
 # 使用短名称（向后兼容）
 /model deepseek   # 切换到 DeepSeek V3.2
 /model qwen       # 切换到 Qwen3 Max
-/model glm        # 切换到 GLM 4.7
+/model glm        # 切换到 GLM 5.2
 /model kimi       # 切换到 Kimi K2 Thinking
 /model minimax    # 切换到 MiniMax M2.1
 
 # 使用版本别名（明确指定版本）
 /model deepseek-v3.2   # DeepSeek V3.2
-/model glm-5           # GLM 5.0
+/model glm-5.2         # GLM 5.2
 /model minimax-m2.5    # MiniMax M2.5
 /model kimi-k2         # Kimi K2 Thinking
 /model qwen3-max       # Qwen3 Max
@@ -295,6 +295,12 @@ npx @andyzheung/ccmr start --port 9000
 3. 运行 `npx @andyzheung/ccmr models` 查看状态
 
 ## 更新日志
+
+### v1.2.4
+- 更新 GLM 模型至 5.2 版本（model_id: glm-5.2）
+- 更新 GLM 上下文窗口至 1M（1000000）
+- 新增版本别名 `glm-5.2` 和 `glm-52`
+- 保留旧版本别名（glm-5、glm-5.0 等）向后兼容
 
 ### v1.2.0
 - 更新 MiniMax 模型至 M2.5 版本

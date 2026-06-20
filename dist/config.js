@@ -67,16 +67,16 @@ const DEFAULT_CONFIG = {
             context_window: 256000,
         },
         glm: {
-            display_name: 'GLM 5.0',
+            display_name: 'GLM 5.2',
             provider: 'zhipu',
-            model_id: 'glm-5',
+            model_id: 'glm-5.2',
             base_url: 'https://open.bigmodel.cn/api/anthropic',
             api_key_env: 'GLM_API_KEY',
             auth_header: 'x-api-key',
             supports_streaming: true,
             supports_tools: true,
-            max_tokens: 128000,
-            context_window: 200000,
+            max_tokens: 65536,
+            context_window: 1000000,
         },
     },
     aliases: {
@@ -97,6 +97,8 @@ const DEFAULT_CONFIG = {
         'glm-4.6': 'glm',
         'glm-5': 'glm',
         'glm-5.0': 'glm',
+        'glm-5.2': 'glm',
+        'glm-52': 'glm',
         'zhipu': 'glm',
         'chatglm': 'glm',
     },
@@ -244,14 +246,14 @@ models:
     context_window: 256000
 
   glm:
-    display_name: "GLM 5.0"
+    display_name: "GLM 5.2"
     provider: zhipu
-    model_id: glm-5
+    model_id: glm-5.2
     base_url: https://open.bigmodel.cn/api/anthropic
     api_key_env: GLM_API_KEY
     auth_header: x-api-key
-    max_tokens: 128000
-    context_window: 200000
+    max_tokens: 65536
+    context_window: 1000000
 
 aliases:
   ds: deepseek
@@ -263,6 +265,7 @@ aliases:
   qwen3-max: qwen
   glm-4.7: glm
   glm-5: glm
+  glm-5.2: glm
 
 gateway:
   port: 8080
