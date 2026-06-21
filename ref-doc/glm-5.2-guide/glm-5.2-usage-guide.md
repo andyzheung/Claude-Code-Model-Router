@@ -303,6 +303,9 @@ CCMR-Plus 启动时会自动合并（`models.yaml` > 默认配置）。
 
 ## 相关文档
 
+- [回退指南（1.2.4 → 1.2.3 / 回退到 GLM 5.0）](rollback-guide.md)
+- [升级指南（从 1.2.3 切换到 1.2.4）](upgrade-guide.md)
+- [遗留事项跟踪](pending-items.md)
 - [用户使用指南（通用）](../user-guide.md)
 - [项目 README](../../README.md)
 - 官方模型文档：https://docs.bigmodel.cn/cn/guide/models/text/glm-5.2

@@ -12,6 +12,9 @@
 |------|------|----------|
 | **[user-guide.md](user-guide.md)** | 完整的用户使用指南 | 最终用户 |
 | **[glm-5.2-usage-guide.md](glm-5.2-guide/glm-5.2-usage-guide.md)** | GLM-5.2 升级与使用指南 | 用户、维护者 |
+| **[rollback-guide.md](glm-5.2-guide/rollback-guide.md)** | 回退指南（1.2.4↔1.2.3 / GLM 5.2↔5.0） | 用户、维护者 |
+| **[upgrade-guide.md](glm-5.2-guide/upgrade-guide.md)** | 从 1.2.3 升级到 1.2.4 并启用 GLM-5.2 | 用户 |
+| **[pending-items.md](glm-5.2-guide/pending-items.md)** | 遗留事项跟踪（thinking/extra_body 等） | 维护者 |
 | **[download-verification-guide.md](download-verification-guide.md)** | 下载、安装和验证指南 | 用户、开发者 |
 
 ### 🔧 开发者文档
