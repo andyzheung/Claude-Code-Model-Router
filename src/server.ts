@@ -5,6 +5,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { ConfigManager } from './config.js';
 import { ModelRouter, RouterError } from './router.js';
+import { VERSION } from './version.js';
 import type { MessagesRequest } from './types.js';
 
 export function createServer(configManager: ConfigManager) {
@@ -34,7 +35,7 @@ export function createServer(configManager: ConfigManager) {
 
     res.json({
       status: 'healthy',
-      version: '1.0.0',
+      version: VERSION,
       default_model: config.default_model,
       models,
     });

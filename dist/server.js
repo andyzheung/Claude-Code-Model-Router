@@ -10,6 +10,7 @@ exports.createServer = createServer;
 exports.startServer = startServer;
 const express_1 = __importDefault(require("express"));
 const router_js_1 = require("./router.js");
+const version_js_1 = require("./version.js");
 function createServer(configManager) {
     const app = (0, express_1.default)();
     const router = new router_js_1.ModelRouter(configManager);
@@ -33,7 +34,7 @@ function createServer(configManager) {
         }
         res.json({
             status: 'healthy',
-            version: '1.0.0',
+            version: version_js_1.VERSION,
             default_model: config.default_model,
             models,
         });

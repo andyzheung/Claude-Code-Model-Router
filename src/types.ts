@@ -13,6 +13,12 @@ export interface ModelConfig {
   supports_tools?: boolean;
   max_tokens?: number;
   context_window?: number;
+  /**
+   * Provider-specific request fields merged into the upstream body
+   * only when the client did not set them explicitly (client wins).
+   * Example: { thinking: { type: 'enabled' }, reasoning_effort: 'max' }
+   */
+  extra_body?: Record<string, unknown>;
 }
 
 export interface GatewayConfig {

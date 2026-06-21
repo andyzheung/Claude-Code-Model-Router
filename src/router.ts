@@ -100,6 +100,16 @@ export class ModelRouter {
       body.max_tokens = maxTokens;
     }
 
+    // Inject provider-specific fields only when the client did not set them.
+    // Applies to both stream and non-stream paths (both call buildRequestBody).
+    if (modelConfig.extra_body) {
+      for (const [key, value] of Object.entries(modelConfig.extra_body)) {
+        if (!(key in body)) {
+          body[key] = value;
+        }
+      }
+    }
+
     return body;
   }
 

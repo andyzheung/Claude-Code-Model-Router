@@ -212,6 +212,7 @@ curl -X POST http://localhost:8080/v1/messages \
 | 鉴权头 | `x-api-key` |
 | Context Window | **1M**（1,000,000） |
 | Max Output Tokens | 64K（65,536） |
+| 深度思考（thinking） | **默认开启**（`extra_body` 注入 `thinking: enabled` + `reasoning_effort: max`） |
 | 流式 / 工具调用 | 支持 / 支持 |
 
 **可用别名（均指向 GLM 5.2）：**
@@ -245,15 +246,31 @@ models:
 
 CCMR-Plus 启动时会自动合并（`models.yaml` > 默认配置）。
 
+### 调整或关闭 thinking 模式
+
+GLM-5.2 默认开启深度思考（v1.2.5+）。如需调整思考强度或关闭，在 `models.yaml` 的 glm 下覆盖 `extra_body`：
+
+```yaml
+models:
+  glm:
+    extra_body:
+      thinking:
+        type: enabled
+      reasoning_effort: medium   # low / medium / high / max（默认 max）
+    # 想完全关闭 thinking：extra_body: {}
+```
+
+详见 [thinking 模式使用指南](thinking-mode-guide.md)。
+
 ---
 
 ## 十、已知限制与注意事项
 
-1. **深度思考（thinking）模式暂未支持**
-   - GLM-5.2 的卖点是 `thinking: enabled` + `reasoning_effort: max` 深度思考。
-   - 但官方文档展示的是 **OpenAI 端点**参数，CCMR-Plus 走 **Anthropic 端点**，该端点是否接受这些参数**尚未验证**。
-   - 当前版本（v1.2.4）**不注入 thinking 参数**，GLM-5.2 以普通模式运行。
-   - 是否支持思考模式取决于第七节的实测结果；确认端点支持后，后续版本可通过 `extra_body` 配置字段注入（规划中）。
+1. **深度思考（thinking）模式已默认开启** ✅
+   - GLM-5.2 的 `thinking: enabled` + `reasoning_effort: max` 深度思考**已实测通过并默认启用**（智谱 Anthropic 端点支持）。
+   - 实现方式：通过通用 `extra_body` 配置字段注入；思考过程以**标准 Anthropic `thinking` block**（带 `signature`）返回，Claude Code 可原生渲染。
+   - 客户端优先：若 Claude Code 自身传了 `thinking` 参数，以客户端为准，路由不覆盖。
+   - 想关闭思考模式：在 `models.yaml` 里把 `extra_body` 覆盖为空，或删掉对应字段。详见 [thinking 模式使用指南](thinking-mode-guide.md)。
 
 2. **temperature 注意**
    - 官方思考模式示例要求 `temperature: 1.0`。普通模式下 Claude Code 自行传参，通常无需干预。
@@ -287,8 +304,8 @@ CCMR-Plus 启动时会自动合并（`models.yaml` > 默认配置）。
 **Q2：`/model glm` 现在用的是 5.2 吗？**
 是的。`glm` 短名称始终指向配置中的最新版本，v1.2.4 起即 5.2。
 
-**Q3：为什么没有自动开启深度思考？**
-见第十节。thinking 参数在 Anthropic 端点的支持情况待实测，确认后会在后续版本支持。
+**Q3：深度思考（thinking）是默认开启的吗？**
+是的。v1.2.5 起 GLM-5.2 默认通过 `extra_body` 注入 `thinking: enabled` + `reasoning_effort: max`，已实测智谱 Anthropic 端点支持。思考过程以标准 Anthropic thinking block 返回。详见第十节与 [thinking 模式使用指南](thinking-mode-guide.md)。
 
 **Q4：如何回退到 5.0？**
 安装旧版本：`npm install -g @andyzheung/ccmr@1.2.3`；或在 `models.yaml` 中把 `model_id` 覆盖回 `glm-5`。

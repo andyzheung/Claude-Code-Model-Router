@@ -2,92 +2,72 @@
 
 > 记录 GLM-5.2 升级（v1.2.4）后**未完成、待跟进**的事项，便于持续跟踪。
 >
-> 最近更新：2026-06-21
+> 最近更新：2026-06-21（thinking 模式已实现并端到端验证通过）
 
 ---
 
-## 🔥 核心遗留：GLM-5.2 thinking 模式支持（extra_body 字段）
+## ✅ 已完成：GLM-5.2 thinking 模式支持（extra_body 字段）
 
-### 现状
+> 原核心遗留，已于 **2026-06-21 实现并端到端验证通过**。以下保留方案与验证记录供回溯。
 
-v1.2.4 已将 GLM 升级到 5.2，但 **以普通模式运行**，未注入 thinking 参数。GLM-5.2 的「深度思考」（`thinking` + `reasoning_effort`）卖点尚未启用。
+### 实现内容
 
-### 目标
-
-新增通用 `extra_body` 配置字段，让 GLM-5.2 在请求中注入 `thinking: {type: enabled}` + `reasoning_effort: max`，发挥 5.2 的思考能力。
-
-### 前置条件（实施前必须先验证）
-
-智谱 **Anthropic 端点**（`/api/anthropic`）是否接受 `thinking` / `reasoning_effort` 参数。
-
-- 官方文档只在 **OpenAI 端点**（`/api/paas/v4/chat/completions`）演示了这俩参数
-- Anthropic 端点是否支持**未经实测**
-
-验证命令：
-
-```bash
-curl -X POST https://open.bigmodel.cn/api/anthropic/v1/messages \
-  -H "Content-Type: application/json" \
-  -H "x-api-key: $GLM_API_KEY" \
-  -d '{"model":"glm-5.2","max_tokens":256,"thinking":{"type":"enabled"},"reasoning_effort":"max","messages":[{"role":"user","content":"你好"}]}'
-```
-
-- 200 + 正常回复 → 端点支持，可推进实施
-- 报错 / 被忽略 → 端点不支持，方案搁置
-
-### 设计方案（验证通过后实施）
-
-采用**通用 `extra_body` 字段**（不硬编码智谱参数，保持「配置驱动」哲学）：
+采用**通用 `extra_body` 字段**（保持「配置驱动」哲学，不硬编码智谱参数）：
 
 | 文件 | 改动 |
 |------|------|
 | `src/types.ts` | `ModelConfig` 增加 `extra_body?: Record<string, unknown>` |
-| `src/router.ts` `buildRequestBody` | 若 `modelConfig.extra_body` 存在，merge 进 body（仅注入客户端未显式指定的字段） |
-| `src/config.ts` glm 配置 | 填 `extra_body: { thinking: { type: 'enabled' }, reasoning_effort: 'max' }` |
+| `src/router.ts` `buildRequestBody` | 若 `modelConfig.extra_body` 存在，merge 进 body（仅注入客户端未显式指定的字段，客户端优先） |
+| `src/config.ts` glm 配置 | 填 `extra_body: { thinking: { type: 'enabled' }, reasoning_effort: 'max' }`（默认配置 + `generateConfigFile` 模板同步） |
+| `src/version.ts`（新增） | 抽取共享 VERSION 常量，`cli.ts` + `server.ts` 复用（顺带修复 server.ts 版本硬编码） |
 
-router 注入逻辑示意：
+注入逻辑（`buildRequestBody`，stream / 非 stream 两条路径自动覆盖）：
 
 ```ts
-const body = { ...request };
-body.model = modelConfig.model_id;
-// 注入模型专属参数（客户端未显式指定时才注入）
 if (modelConfig.extra_body) {
-  for (const [k, v] of Object.entries(modelConfig.extra_body)) {
-    if (!(k in body)) body[k] = v;
+  for (const [key, value] of Object.entries(modelConfig.extra_body)) {
+    if (!(key in body)) body[key] = value;  // 客户端优先
   }
 }
 ```
 
-> 改动集中在一处（`buildRequestBody`），stream / 非 stream 两条路径自动覆盖。
+### 端点验证结果（2026-06-21，已通过）
 
-### 待决策点
+智谱 **Anthropic 端点**（`/api/anthropic/v1/messages`）**接受** `thinking` / `reasoning_effort` 参数：
 
-1. **temperature**：思考模式要求 `temperature: 1.0`，是否在 `extra_body` 强制覆盖（会覆盖 Claude Code 传入值）？
-2. **客户端优先**：注入逻辑只在客户端未传该字段时注入（上方示意已如此）。
-3. **router.ts 拆分**：当前 313 行，超 CLAUDE.md 的 200 行硬指标；加注入逻辑时建议顺手拆分（**当前用户决定暂缓**）。
+- 普通模式：HTTP 200，正常回复。
+- thinking 模式：HTTP 200，思考过程以**标准 Anthropic `thinking` block**（带 `signature`）返回，Claude Code 可原生渲染。
+- 未传 `temperature` 未报错（官方 OpenAI 端点示例要求 `temperature:1.0`，Anthropic 端点不强制）。
 
-### 验证方法
+整链路（Claude Code → 网关 → 智谱）已通过网关 `/v1/messages` 实测确认：返回体含 `{"type":"thinking",...}` block。
 
-注入后：curl 打网关 + 在 Claude Code 实测，确认思考过程（`reasoning_content`）能正常返回并被渲染。
+### 关键决策
+
+- **客户端优先**：注入逻辑只在客户端未传该字段时注入（已实现）。
+- **temperature**：不强制覆盖（端点不强制；遵循客户端优先）。
+- **默认开启**：GLM 默认即注入 thinking（已实测端点支持，安全）。想关闭：`models.yaml` 覆盖 `extra_body` 为空。
 
 ---
 
 ## 📋 其它遗留事项
 
-| # | 事项 | 说明 | 优先级 |
-|---|------|------|--------|
-| 1 | `ref-doc/user-guide.md` 内容过期 | 仍写 GLM 5.0，未更新到 5.2（不影响 npm 包，仅仓库文档） | 低 |
-| 2 | `src/server.ts` health 版本硬编码 | `/health` 返回 `version: '1.0.0'`，应改为读 VERSION 常量 | 低 |
-| 3 | `npm pkg fix` | 修 `repository.url normalized` 发布警告（需 bump 版本后发布生效） | 低 |
-| 4 | GitHub Release v1.2.4 | 打 tag + release notes（可选） | 可选 |
-| 5 | npm token 撤销 🔒 | 发布用的两个 token 已在对话明文暴露（含一个 bypass 2FA），建议去 npm 网站 → Access Tokens 撤销 | **高（安全）** |
-| 6 | `router.ts` 超 200 行 | 313 行 > CLAUDE.md 硬指标，建议拆分（当前决定暂缓） | 中 |
+| # | 事项 | 状态 | 说明 |
+|---|------|------|------|
+| 1 | `ref-doc/user-guide.md` 内容过期 | ✅ 已更新（2026-06-21） | 已同步到 GLM 5.2 |
+| 2 | `src/server.ts` health 版本硬编码 | ✅ 已修复（2026-06-21） | 抽 `src/version.ts` 共享，`/health` 返回 1.2.4 |
+| 3 | `npm pkg fix` | ⬜ 待办 | 修 `repository.url normalized` 发布警告（需 bump 版本后发布生效） |
+| 4 | GitHub Release v1.2.5 | ⬜ 可选 | 打 tag + release notes |
+| 5 | npm token / API Key 撤销 🔒 | ⬜ **高（安全）** | 发布用 token 曾在对话明文暴露（含一个 bypass 2FA），去 npm 网站 → Access Tokens 撤销。**本次验证用的 GLM_API_KEY 也在对话明文暴露，建议一并轮换** |
+| 6 | `router.ts` 超 200 行 | ⬜ 暂缓 | 加 extra_body 注入后约 322 行 > CLAUDE.md 硬指标，建议后续拆分（当前暂缓） |
 
 ---
 
 ## 状态记录
 
-- **2026-06-21**：v1.2.4 发布完成（GLM-5.2 普通模式）。thinking 支持（extra_body 字段）列为下一步，待 Anthropic 端点 thinking 参数实测通过后实施。
+- **2026-06-21**：v1.2.4 发布完成（GLM-5.2 普通模式）。
+- **2026-06-21**：thinking 支持（extra_body 字段）**实现并端到端验证通过**；智谱 Anthropic 端点确认支持 thinking 参数。同步修复 server.ts 版本号硬编码、更新 user-guide.md。
+- **2026-06-21**：**v1.2.5 已发布到 npm（dist-tag `latest`）**。含 thinking 默认开启、server.ts 版本修复、user-guide 同步、新增 thinking-mode-guide.md。
+- **🔒 安全提醒**：本次验证使用的 GLM_API_KEY 已在对话明文暴露，建议轮换。
 
 ---
 

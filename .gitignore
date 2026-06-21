@@ -36,3 +36,4 @@ models.yaml
 
 # Claude Code local settings
 .claude/
+.agents/

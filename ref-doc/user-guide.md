@@ -16,7 +16,7 @@
 CCMR-Plus (Claude Code Model Router Plus) 是一个轻量级 API 网关，让你在使用 Claude Code 时可以切换到第三方 AI 模型。
 
 **核心特性：**
-- ✅ 支持 **GLM 5.0**（智谱 AI 最新版本）
+- ✅ 支持 **GLM 5.2**（智谱 AI 最新版本，**默认开启深度思考 thinking 模式**，通过 `extra_body` 注入 `thinking: enabled` + `reasoning_effort: max`，思考过程以标准 Anthropic thinking block 返回；已实测智谱 Anthropic 端点支持）
 - ✅ 支持 **MiniMax M2.5**（MiniMax 最新版本）
 - ✅ 支持其他模型：DeepSeek V3.2、Kimi K2、Qwen3 Max
 - ✅ 完全兼容 Claude Code 的所有功能
@@ -30,7 +30,7 @@ CCMR-Plus (Claude Code Model Router Plus) 是一个轻量级 API 网关，让你
 |------|-----------|-----------|
 | npm 包名 | `claude-code-model-router` | `@andyzheung/ccmr` |
 | CLI 命令 | `ccmr` | `ccmr-plus` |
-| GLM 版本 | GLM 4.7 | **GLM 5.0** |
+| GLM 版本 | GLM 5.0 | **GLM 5.2** |
 | MiniMax 版本 | MiniMax M2.1 | **MiniMax M2.5** |
 | 配置目录 | `~/.claude-gateway/` | `~/.ccmr-plus/` |
 | 配置文件 | `.claude-router.yaml` | `.ccmr-plus.yaml` |
@@ -83,7 +83,7 @@ ccmr-plus init
 编辑 `.env` 文件，填入你的 API Keys：
 
 ```bash
-# GLM 5.0 - https://open.bigmodel.cn/
+# GLM 5.2 - https://open.bigmodel.cn/
 GLM_API_KEY=your_glm_api_key_here
 
 # MiniMax M2.5 - https://platform.minimax.io/
@@ -126,7 +126,7 @@ ccmr-plus start
 #
 # Available models:
 #   - deepseek: DeepSeek V3.2 [Ready]
-#   - glm: GLM 5.0 [Ready]
+#   - glm: GLM 5.2 [Ready]
 #   - minimax: MiniMax M2.5 [Ready]
 #
 # Press Ctrl+C to stop the gateway.
@@ -136,7 +136,7 @@ ccmr-plus start
 ccmr-plus claude
 
 # 3. 在 Claude Code 中切换模型
-/model glm-5           # 使用 GLM 5.0
+/model glm-5           # 使用 GLM 5.2
 /model minimax-m2.5    # 使用 MiniMax M2.5
 /model deepseek        # 使用 DeepSeek
 ```
@@ -146,7 +146,7 @@ ccmr-plus claude
 #### 使用短名称（默认最新版本）
 
 ```bash
-/model glm        # GLM 5.0
+/model glm        # GLM 5.2
 /model minimax    # MiniMax M2.5
 /model deepseek   # DeepSeek V3.2
 /model kimi       # Kimi K2 Thinking
@@ -156,9 +156,11 @@ ccmr-plus claude
 #### 使用版本别名（明确指定版本）
 
 ```bash
-/model glm-5           # GLM 5.0
-/model glm-5.0         # GLM 5.0
-/model glm-4.7         # GLM 4.7（兼容旧版本）
+/model glm-5.2         # GLM 5.2
+/model glm-52          # GLM 5.2
+/model glm-5           # GLM 5.2（兼容旧别名，指向 5.2）
+/model glm-5.0         # GLM 5.2（兼容旧别名，指向 5.2）
+/model glm-4.7         # GLM 4.7（兼容旧别名，仍指向当前 5.2）
 /model minimax-m2.5    # MiniMax M2.5
 /model minimax-m2.1    # MiniMax M2.1（兼容旧版本）
 ```
@@ -182,7 +184,7 @@ ccmr-plus --help
 
 | 模型 | 版本别名 | Context Window | Max Output |
 |------|----------|----------------|------------|
-| GLM 5.0 | `glm-5`, `glm-5.0` | 200K | 128K |
+| GLM 5.2 | `glm-5.2`, `glm-52`, `glm-5`, `glm-5.0`（旧别名兼容） | 1M | 64K |
 | MiniMax M2.5 | `minimax-m2.5` | 200K | 128K |
 | DeepSeek V3.2 | `deepseek`, `ds` | 128K | 128K |
 | Kimi K2 | `kimi`, `kimi-k2` | 256K | 32K |
@@ -237,7 +239,7 @@ ccmr-plus --version
 编辑项目目录下的 `.env` 文件：
 
 ```bash
-# GLM 5.0
+# GLM 5.2
 GLM_API_KEY=your_key_here
 
 # MiniMax M2.5
@@ -309,12 +311,14 @@ ccmr-plus claude --print "你的问题"
 # ... 等等
 ```
 
-### Q10: GLM-5 和 GLM-4.7 有什么区别？
+### Q10: GLM-5.2 相比旧版本有什么改进？
 
-GLM-5 是智谱 AI 的最新版本，性能更强：
-- 更好的代码生成能力
-- 更长的上下文支持
-- 更快的响应速度
+GLM-5.2 是智谱 AI 的最新版本，相比旧版本（GLM 5.0 / GLM 4.7）的主要改进：
+- **1M 上下文窗口**（旧版为 200K），可处理更长的代码库与文档
+- **默认开启深度思考（thinking）模式**：通过 `extra_body` 注入 `thinking: enabled` + `reasoning_effort: max`，思考过程以标准 Anthropic thinking block 返回，推理质量更高
+- **64K 最大输出**（旧版为 128K 上限，5.2 调整为 64K 的单次输出上限）
+
+> 注：`glm-5`、`glm-5.0`、`glm-4.7` 等旧别名仍可使用，均自动指向当前的 GLM 5.2。
 
 ---
 

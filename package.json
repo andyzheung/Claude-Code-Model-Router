@@ -1,6 +1,6 @@
 {
   "name": "@andyzheung/ccmr",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "A lightweight API gateway for routing Claude Code requests to multiple AI models (Forked with GLM-5.2 and MiniMax M2.5 support)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -35,7 +35,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/andyzheung/Claude-Code-Model-Router.git"
+    "url": "git+https://github.com/andyzheung/Claude-Code-Model-Router.git"
   },
   "bugs": {
     "url": "https://github.com/andyzheung/Claude-Code-Model-Router/issues"

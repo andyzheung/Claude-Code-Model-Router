@@ -73,6 +73,12 @@ const DEFAULT_CONFIG: RouterConfig = {
       supports_tools: true,
       max_tokens: 65536,
       context_window: 1000000,
+      // Enable GLM-5.2 deep thinking (verified on the Anthropic endpoint).
+      // Returned as native Anthropic "thinking" blocks; client value wins.
+      extra_body: {
+        thinking: { type: 'enabled' },
+        reasoning_effort: 'max',
+      },
     },
   },
   aliases: {
@@ -265,6 +271,10 @@ models:
     auth_header: x-api-key
     max_tokens: 65536
     context_window: 1000000
+    extra_body:
+      thinking:
+        type: enabled
+      reasoning_effort: max
 
 aliases:
   ds: deepseek
